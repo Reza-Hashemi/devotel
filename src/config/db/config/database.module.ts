@@ -2,6 +2,9 @@ import { Module } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { TypeOrmModule, TypeOrmModuleOptions } from "@nestjs/typeorm";
 import { resolve } from "path";
+import { Post } from "src/entities/post.entity";
+import { Role } from "src/entities/role.entity";
+import { User } from "src/entities/user.entity";
 
 @Module({
     imports: [
@@ -16,11 +19,10 @@ import { resolve } from "path";
                 username: config.get<string>("DATABASE_USERNAME"),
                 password: config.get<string>("DATABASE_PASSWORD"),
                 database: config.get<string>("DATABASE_NAME"),
-                schema: config.get<string>("DATABASE_SCHEMA"),
-                entities: [resolve(__dirname, '../../../entities/*.entity.ts')],
+                entities: [User, Role, Post],
                 migrations: [resolve(__dirname, '../dataSoucre/migration/*{.ts,.js}')],
                 logging: false,
-                synchronize: false,
+                synchronize: true,
             }),
         }),
     ],

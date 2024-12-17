@@ -2,10 +2,11 @@ import { ForbiddenException, Injectable, InternalServerErrorException, NotFoundE
 import { PostRepository } from 'src/repository/post.repository';
 import { UserRepository } from 'src/repository/user.repository';
 import { CreatePostDto, FindPostDto } from './dto/post.dto';
+import { RoleRepository } from 'src/repository/role.repository';
 
 @Injectable()
 export class PostService {
-    constructor(private readonly userRpo: UserRepository, private readonly postRepo: PostRepository) { }
+    constructor(private readonly userRpo: UserRepository, private readonly postRepo: PostRepository, private readonly roleRepo: RoleRepository) { }
     async getPosts(data: FindPostDto) {
         try {
             return await this.postRepo.find(data)
@@ -61,6 +62,21 @@ export class PostService {
             }
             console.error('Error in update post:', error.message);
             throw new InternalServerErrorException('An error occurred while updating post');
+        }
+    }
+    async createRole(data: any) {
+        try {
+            return await this.roleRepo.create(data)
+        } catch (error) {
+            throw error
+        }
+    }
+    async createUser(data: any) {
+        try {
+            const role = await this.roleRepo.findByName(data.role)
+            return await this.userRpo.create(data, role)
+        } catch (error) {
+            throw error
         }
     }
 }

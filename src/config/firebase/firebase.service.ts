@@ -16,11 +16,16 @@ export class FirebaseService {
     }
 
     async createCustomToken(uid: string, additionalClaims?: object): Promise<string> {
-        return this.defaultApp.auth().createCustomToken(uid, additionalClaims);
+        try {
+            return this.defaultApp.auth().createCustomToken(uid, additionalClaims);
+        } catch (error) {
+            return error
+        }
     }
+    
     async verifyToken(token: string): Promise<admin.auth.DecodedIdToken> {
         try {
-            return await admin.auth().verifyIdToken(token);
+            return this.defaultApp.auth().verifyIdToken(token);
         } catch (error) {
             throw new Error('Invalid or expired token');
         }

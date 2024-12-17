@@ -27,4 +27,12 @@ export class RoleRepository {
             throw new InternalServerErrorException('An error occurred while fetching roles');
         }
     }
+    async findByName(date: any): Promise<Role> {
+        const { name } = date
+        try {
+            return await this.roleRepo.findOne({ where: { name } })
+        } catch (error) {
+            throw new InternalServerErrorException('An error occurred while fetching roles');
+        }
+    }
 }

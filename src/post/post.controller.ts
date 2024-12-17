@@ -3,6 +3,8 @@ import { PostService } from './post.service';
 import { CreatePostDto, FindPostDto } from './dto/post.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { uploadOptions } from 'src/config/fileManager';
+import { Role } from 'src/entities/role.entity';
+import { Roles } from 'src/common/guard/role.decorator';
 
 @Controller('posts')
 export class PostController {
@@ -24,5 +26,15 @@ export class PostController {
   @Delete(":id")
   async delete(@Req() req: any, @Param("id") id: string) {
     return await this.postService.deletePost(+id, req.userId)
+  }
+
+  @Post("createRole")
+  // @Roles(['admin', 'operator'])
+  async createRole(@Body() data: any) {
+    return await this.postService.createRole(data)
+  }
+  @Post("createUser")
+  async createUser(@Body() data: any) {
+    return await this.postService.createUser(data)
   }
 }

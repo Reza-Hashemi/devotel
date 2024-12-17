@@ -1,5 +1,6 @@
 import { InternalServerErrorException, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
+import { LoginDto } from "src/auth/dto/auth.dto";
 import { Role } from "src/entities/role.entity";
 import { User } from "src/entities/user.entity";
 import { Repository } from "typeorm";
@@ -32,6 +33,20 @@ export class UserRepository {
             }
             console.error('Error in delete post:', error.message);
             throw new InternalServerErrorException('An error occurred while finding user');
+        }
+    }
+    async findByUserAndPass(data: LoginDto): Promise<User> {
+        const { password, username } = data
+        try {
+            const user = await this.userRepo.findOne({
+                where: {
+                    username, password
+                }
+            })
+            if (!user) throw new NotFoundException("user not found!")
+            return user
+        } catch (error) {
+            throw error
         }
     }
 }
